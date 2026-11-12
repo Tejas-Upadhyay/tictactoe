@@ -12,6 +12,11 @@ using namespace std;
 
 // tic tac toe
 
+//TODO: MAKE SURE TO INCLUDE `PUBLIC`
+//TODO: Make the movement into a class
+//TODO: Use pointers
+//TODO: Use Structures
+
 // stats
 int wins = 0;
 int losses = 0;
@@ -19,14 +24,15 @@ int draws = 0;
 int games = 0;
 
 // keeps track of the moves in the current game
-struct Move {
-    int position;
-    char player;
+
+class Move {
+    public:
+        int position;
+        char player;
 };
 
 Move history[9];
 int moveCount = 0;
-
 //function checks win state for either player or AI
 bool checkwin(char board[9], char XorO) {
 	//Rows
@@ -180,7 +186,7 @@ int AIbestmove(char board[9], char aiplayer, char player) {
 			return i;
 		}
 	}
-    //minimax for impossible mode
+//minimax for impossible mode
 int minimax(char board[9], int depth, bool isMax, char aiplayer) {
     char opponent = 'X';
     if (aiplayer == 'X') {
@@ -306,7 +312,7 @@ void playPvP(char board[9], string p1, string p2) {
     while (true) {
         printboard(board);
         cout << currentName << " (" << current << ") your turn" << endl;
-        int choice = getValidMove(board);
+        int choice = getValidMoveUser(board);
         move(board, choice, current);
         addToHistory(choice, current);
         if (checkwin(board, current)) {
@@ -362,7 +368,7 @@ void playPvAI(char board[9], string name, char playerLetter, int difficulty) {
 
         if (humanTurn) {
             cout << name << " (" << human << ") your turn" << endl;
-            int choice = getValidMove(board);
+            int choice = getValidMoveUser(board);
             move(board, choice, human);
             addToHistory(choice, human);
             if (checkwin(board, human)) {
@@ -422,7 +428,8 @@ void playPvAI(char board[9], string name, char playerLetter, int difficulty) {
         }
     }
 }
-void playAIvAI(char board[9], int difficulty) {
+//TODO: Add options for AI vs. AI function. 
+void playAIvAI(char board[9]) {
     RESET(board);
     moveCount = 0;
     char current = 'X';
@@ -430,26 +437,41 @@ void playAIvAI(char board[9], int difficulty) {
         printboard(board);
         cout << "AI " << current << " is thinking..." << endl;
         char opponent;
-        if (current == 'X') {
-            opponent = 'O';
-        }else {
-            opponent = 'X';
+        int choice1;
+        int choice2;
+        int difficulty1;
+        int difficulty2;
+        while (difficulty1 == 1 || difficulty1 == 2 || difficulty1 == 3) {
+            cout << "for Player 1 what diffcultly do you want for them? (1 for easy, 2 for hard, 3 for impossible)";
+            cin >> difficulty1;
+            if (difficulty1 == 1)
+                choice1 = AIrandom(board);
+            if (difficulty1 == 2)
+                choice1 = AIbestmove(board, current, opponent);
+            if (difficulty1 == 3)
+            choice1 = bestMove(board, current);
+            else
+                cout << "please input a 1, 2, or 3 for easy, hard or impossible";
         }
-        int choice;
-        if (difficulty == 1) {
-            choice = AIrandom(board);
-        }if (difficulty == 2) {
-            choice = AIbestmove(board, current, opponent);
-        }else {
-            choice = bestMove(board, current);
+        while (difficulty2 == 1 || difficulty2 == 2 || difficulty2 == 3) {
+            cout << "for Player 2 what diffcultly do you want for them? (1 for easy, 2 for hard, 3 for impossible)";
+            cin >> difficulty2;
+            if (difficulty2 == 1)
+                choice1 = AIrandom(board);
+            if (difficulty2 == 2)
+                choice1 = AIbestmove(board, current, opponent);
+            if (difficulty2 == 3)
+            choice1 = bestMove(board, current);
+            else
+                cout << "please input a 1, 2, or 3 for easy, hard or impossible";
         }
-        move(board, choice, current);
-        addToHistory(choice, current);
-        cout << "AI " << current << " picks spot " << choice + 1 << endl;
+        move(board, choice1, current);
+        addToHistory(choice1, current);
+        cout << "AI " << current << " picks spot " << 3 << choice1 + 1 << endl;
         if (checkwin(board, current)) {
             printboard(board);
             cout << "AI " << current << " wins!" << endl;
-            if (current == 'X') {
+            if (current == 'X' || current == 'O') {
                 wins++;
             }
             else {
@@ -476,6 +498,8 @@ void playAIvAI(char board[9], int difficulty) {
         }
     }
 }
+//TODO: Add exception handling
+//TODO: Fix the menu options
 int main() {
 	//do-while loop for the main game
 	char again;
@@ -490,98 +514,110 @@ int main() {
 		int gamechoice = 0;
 		//do-while to pick difficulty
 		do {
-			std::cout << "Pick your opponent: Easy (1), Hard (2), Impossible (3): ";
+			cout << endl;
+            cout << "TIC TAC TOE" << endl;
+            cout << "===========" << endl;
+            cout << "Wins: " << wins << "  Losses: " << losses << "  Draws: " << draws << endl;
+            cout << endl;
+            cout << "1. Player vs Player" << endl;
+            cout << "2. Player vs AI" << endl;
+            cout << "3. AI vs AI" << endl;
+            cout << "4. Stats" << endl;
+            cout << "5. Quit" << endl;
 			std::cin >> gamechoice;
-		} while (!(gamechoice == 1) && !(gamechoice == 2));
+		} while (!(gamechoice == 1) && !(gamechoice == 2) && !(gamechoice == 3) && !(gamechoice == 4) && !(gamechoice == 5));
 		//do-while to pick your letter
-		do {
-			std::cout << "Pick O or X: ";
-			std::cin >> player;
-			player = toupper(player);
-		} while (!(player == 'O') && !(player == 'X'));
-		if (player == 'O') {
-			aiplayer = 'X';
-		}
-		else if (player == 'X') {
-			aiplayer = 'O';
-		}
-		printboard(board);
-		//EASY     while loop that is the main game function
-		if (gamechoice == 1) {
-			while (true) {
-				//player move
-				choice = getValidMoveUser(board);
-				move(board, choice, player);
-				printboard(board);
-				if (checkwin(board, player) || checkwin(board, aiplayer) || checkdraw(board)) {
-					break;
-				}
-				//Ai Best Move
-				aichoice = AIrandom(board);
-				std::cout << "Ai moved to: " << aichoice + 1 << std::endl;
-				move(board, aichoice, aiplayer);
-				printboard(board);
-				if (checkwin(board, player) || checkwin(board, aiplayer) || checkdraw(board)) {
-					break;
-				}
-			}
-		}
-		//HARD     while loop that is the main game function
-		else if (gamechoice == 2) {
-			while (true) {
-				//player move
-				choice = getValidMoveUser(board);
-				move(board, choice, player);
-				printboard(board);
-				if (checkwin(board, player) || checkwin(board, aiplayer) || checkdraw(board)) {
-					break;
-				}
-				//Ai Best Move
-				aichoice = AIbestmove(board, aiplayer, player);
-				std::cout << "Ai moved to: " << aichoice + 1 << std::endl;
-				move(board, aichoice, aiplayer);
-				printboard(board);
-				if (checkwin(board, player) || checkwin(board, aiplayer) || checkdraw(board)) {
-					break;
-				}
-			}
-		}
-		//HARD     while loop that is the main game function
-		else if (gamechoice == 3) {
-			while (true) {
-				//player move
-				choice = getValidMoveUser(board);
-				move(board, choice, player);
-				printboard(board);
-				if (checkwin(board, player) || checkwin(board, aiplayer) || checkdraw(board)) {
-					break;
-				}
-				//Ai Best Move
-				aichoice = minimax(board, aiplayer, player);
-				std::cout << "Ai moved to: " << aichoice + 1 << std::endl;
-				move(board, aichoice, aiplayer);
-				printboard(board);
-				if (checkwin(board, player) || checkwin(board, aiplayer) || checkdraw(board)) {
-					break;
-				}
-			}
-		}
-		//if statements checking for win condition to print
-		if (checkwin(board, player)) {
-			std::cout << "You win!" << std::endl;
-			printboard(board);
-		}
-		else if (checkdraw(board)) {
-			std::cout << "Draw..." << std::endl;
-			printboard(board);
-		}
-		else {
-			std::cout << "You lost!" << std::endl;
-			printboard(board);
-		}
-		std::cout << "Go again? (Y/N): ";
-		std::cin >> again;
-		again = toupper(again);
-	} while (again == 'Y');
+		if(gamechoice == 1){
+            // Player vs Player
+        }
+        if (gamechoice == 2){
+            do {
+            //do-while to pick difficulty
+            do {
+                cout << "Pick your opponent: Easy (1), Hard (2), Impossible (3) DOES NOT EXIST: ";
+                cin >> gamechoice;
+            } while (!(gamechoice == 1) && !(gamechoice == 2));
+            //do-while to pick your letter
+            do {
+                cout << "Pick O or X: ";
+                cin >> player;
+                player = toupper(player);
+            } while (!(player == 'O') && !(player == 'X'));
+            if (player == 'O') {
+                aiplayer = 'X';
+            }
+            else if (player == 'X') {
+                aiplayer = 'O';
+            }
+            printboard(board);
+            //EASY     while loop that is the main game function
+            if (gamechoice == 1) {
+                while (true) {
+                    //player move
+                    choice = getValidMoveUser(board);
+                    move(board, choice, player);
+                    printboard(board);
+                    if (checkwin(board, player) || checkwin(board, aiplayer) || checkdraw(board)) {
+                        break;
+                    }
+                    //Ai Best Move
+                    aichoice = AIrandom(board);
+                    cout << "Ai moved to: " << aichoice + 1 << endl;
+                    move(board, aichoice, aiplayer);
+                    printboard(board);
+                    if (checkwin(board, player) || checkwin(board, aiplayer) || checkdraw(board)) {
+                        break;
+                    }
+                }
+            }
+            //HARD     while loop that is the main game function
+            else if (gamechoice == 2) {
+                while (true) {
+                    //player move
+                    choice = getValidMoveUser(board);
+                    move(board, choice, player);
+                    printboard(board);
+                    if (checkwin(board, player) || checkwin(board, aiplayer) || checkdraw(board)) {
+                        break;
+                    }
+                    //Ai Best Move
+                    aichoice = AIbestmove(board, aiplayer, player);
+                    cout << "Ai moved to: " << aichoice + 1 << endl;
+                    move(board, aichoice, aiplayer);
+                    printboard(board);
+                    if (checkwin(board, player) || checkwin(board, aiplayer) || checkdraw(board)) {
+                        break;
+                    }
+                }
+            }
+            //if statements checking for win condition to print
+            if (checkwin(board, player)) {
+                cout << "You win!" << endl;
+                printboard(board);
+            }
+            else if (checkdraw(board)) {
+                cout << "Draw..." << endl;
+                printboard(board);
+            }
+            else {
+                cout << "You lost!" << endl;
+                printboard(board);
+            }
+            saveStats(board, player, aiplayer);
+            cout << "Go again? (Y/N): ";
+            cin >> again;
+            again = toupper(again);
+	    } while (again == 'Y');
+        }
+        if (gamechoice == 3){
+            //AI vs AI
+            playAIvAI(board);
+        }
+        if (gamechoice == 4){
+            //Game Stats
+        }
+        if (gamechoice == 5){
+            return 0;
+        }
 	return 0;
 }
