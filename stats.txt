@@ -1,4 +1,0 @@
-games 4
-wins 2
-losses 0
-draws 2
