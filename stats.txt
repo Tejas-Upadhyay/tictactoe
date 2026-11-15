@@ -1,0 +1,16 @@
+all_games 0
+all_wins 0
+all_losses 0
+all_draws 0
+pvp_games 0
+pvp_wins 0
+pvp_losses 0
+pvp_draws 0
+pvai_games 0
+pvai_wins 0
+pvai_losses 0
+pvai_draws 0
+aivai_games 0
+aivai_wins 0
+aivai_losses 0
+aivai_draws 0
