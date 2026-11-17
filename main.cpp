@@ -46,7 +46,7 @@ Move history[9];
 int moveCount = 0;
 
 //function checks win state for either player or AI
-bool checkwin(char board[9], char XorO) {
+bool checkwin(char board[9], char XorO) { // Philip
     //Rows
     if (board[0] == XorO && board[1] == XorO && board[2] == XorO) {
         return true;
@@ -78,7 +78,7 @@ bool checkwin(char board[9], char XorO) {
 }
 
 //Checks if the board is full. We check for a win first.
-bool checkdraw(char board[9]) {
+bool checkdraw(char board[9]) { //philip
     for (int i = 0; i < 9; i++) {
         if (board[i] != 'O' && board[i] != 'X') {
             return false;
