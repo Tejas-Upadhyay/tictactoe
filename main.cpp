@@ -78,7 +78,7 @@ bool checkwin(char board[9], char XorO) { // Philip
 }
 
 //Checks if the board is full. We check for a win first.
-bool checkdraw(char board[9]) { //philip
+bool checkdraw(char board[9]) { //Philip
     for (int i = 0; i < 9; i++) {
         if (board[i] != 'O' && board[i] != 'X') {
             return false;
@@ -88,7 +88,7 @@ bool checkdraw(char board[9]) { //philip
 }
 
 //function prints the current state of the board
-void printboard(const char board[9]) {
+void printboard(const char board[9]) {//Philip
     for (int j = 0; j < 3; j++) {
         for (int i = 0; i < 3; i++) {
             cout << board[j * 3 + i] << " ";
@@ -98,7 +98,7 @@ void printboard(const char board[9]) {
 }
 
 //function to check if a spot is available
-bool availability(char board[9], int position) {
+bool availability(char board[9], int position) {//Philip
     if (position < 0 || position > 8) {
         return false;
     }
@@ -109,20 +109,20 @@ bool availability(char board[9], int position) {
 }
 
 //function to simplify movement of players
-void move(char* board, int position, char XorO) {
+void move(char* board, int position, char XorO) { //Philip
     //same as board[position] = XorO
     *(board + position) = XorO;
 }
 
 //Put the numbers 1 through 9 back on the board.
-void RESET(char board[9]) {
+void RESET(char board[9]) { //Philip
     for (int i = 0; i < 9; i++) {
         board[i] = 1 + i + '0';
     }
 }
 
 //save each move so we can show them after the game
-void addToHistory(int position, char player) {
+void addToHistory(int position, char player) {// Tejas
     if (moveCount < 9) {
         history[moveCount].position = position;
         history[moveCount].player = player;
@@ -131,7 +131,7 @@ void addToHistory(int position, char player) {
 }
 
 //prints the moves from this game
-void showhistory() {
+void showhistory() { // Tejas
     cout << "Moves this game:" << endl;
     if (moveCount == 0) {
         cout << "  (none)" << endl;
@@ -144,7 +144,7 @@ void showhistory() {
 }
 
 //updates the total stats and the stats for this mode
-void updateStats(int mode, int result) {
+void updateStats(int mode, int result) {//tejas
     stats.games++;
     modeStats[mode].games++;
     if (result == WIN) {
@@ -162,7 +162,7 @@ void updateStats(int mode, int result) {
 }
 
 //function that gets a valid move from the user
-int getValidMoveUser(char board[9]) {
+int getValidMoveUser(char board[9]) {//philip
     int choice;
     string input;
     while (true) {
@@ -208,7 +208,7 @@ int getValidMoveUser(char board[9]) {
 }
 
 //Random function
-int getrandom() {
+int getrandom() { //philip
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<> random(0, 8);
@@ -216,7 +216,7 @@ int getrandom() {
 }
 
 //Random based AI; Easy Mode
-int AIrandom(char board[9]) {
+int AIrandom(char board[9]) {//tejas
     int i;
     do {
         i = getrandom();
@@ -225,7 +225,7 @@ int AIrandom(char board[9]) {
 }
 
 //One move ahead AI; hard mode
-int AIbestmove(char board[9], char aiplayer, char player) {
+int AIbestmove(char board[9], char aiplayer, char player) {//tejas
     // See if the AI can win on this turn.
     for (int i = 0; i < 9; i++) {
         if (availability(board, i)) {
@@ -239,7 +239,7 @@ int AIbestmove(char board[9], char aiplayer, char player) {
         }
     }
     //If the other player can win next turn, block that spot.
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 9; i++) {//
         if (availability(board, i)) {
             char original = board[i];
             move(board, i, player);
@@ -322,7 +322,7 @@ int minimax(char board[9], int depth, bool isMax, char aiplayer) {
 }
 
 //finds the best move using minimax
-int bestMove(char board[9], char aiplayer) {
+int bestMove(char board[9], char aiplayer) { //tejas
     int bestVal = -1000;
     int best = -1;
 
@@ -345,14 +345,14 @@ int bestMove(char board[9], char aiplayer) {
 }
 
 //saves one stats record with a prefix so load knows which mode it is
-void saveOneStats(ofstream& file, string prefix, const Stats& s) {
+void saveOneStats(ofstream& file, string prefix, const Stats& s) { //tejas
     file << prefix << "_games " << s.games << endl;
     file << prefix << "_wins " << s.wins << endl;
     file << prefix << "_losses " << s.losses << endl;
     file << prefix << "_draws " << s.draws << endl;
 }
 
-void savestats() {
+void savestats() {//tejas
     try {
         ofstream file("stats.txt");
         if (!file.is_open()) {
@@ -372,7 +372,7 @@ void savestats() {
     }
 }
 
-void loadstats() {
+void loadstats() {//tejas
     ifstream file("stats.txt");
     if (!file.is_open()) {
         return; //first run, no stats saved yet
@@ -446,7 +446,7 @@ void loadstats() {
 }
 
 //prints one stats record
-void printOneStats(string label, const Stats* s) {
+void printOneStats(string label, const Stats* s) {//tejas
     cout << label << endl;
     cout << "  Games: " << s->games << endl;
     cout << "  Wins: " << s->wins << endl;
@@ -459,7 +459,7 @@ void printOneStats(string label, const Stats* s) {
 }
 
 //clears every stat after they say yes
-void resetstats() {
+void resetstats() {//tejas
     cout << "Reset all stats? This can't be undone. (Y/N): ";
     string answer;
     getline(cin, answer);
@@ -477,7 +477,7 @@ void resetstats() {
 }
 
 //shows all the stats, press R to reset them
-void showstats() {
+void showstats() {//tejas
     cout << endl;
     printOneStats("All Modes", &stats);
     printOneStats("Player vs Player", &modeStats[PVP]);
@@ -492,7 +492,7 @@ void showstats() {
     }
 }
 
-void playPvP(char board[9], string p1, string p2) {
+void playPvP(char board[9], string p1, string p2) {//philip
     RESET(board);
     moveCount = 0;
     char current = 'X';
@@ -537,7 +537,7 @@ void playPvP(char board[9], string p1, string p2) {
     }
 }
 
-void playPvAI(char board[9], string name, char playerLetter, int difficulty) {
+void playPvAI(char board[9], string name, char playerLetter, int difficulty) {//tejas
     RESET(board);
     moveCount = 0;
     char human = playerLetter;
@@ -614,7 +614,7 @@ void playPvAI(char board[9], string name, char playerLetter, int difficulty) {
     }
 }
 
-void playAIvAI(char board[9], int difficulty1, int difficulty2) {
+void playAIvAI(char board[9], int difficulty1, int difficulty2) {//tejas
     RESET(board);
     moveCount = 0;
     char current = 'X';
@@ -678,7 +678,7 @@ void playAIvAI(char board[9], int difficulty1, int difficulty2) {
 }
 
 //keeps asking until the user types a valid whole number
-int getValidNumber(string prompt, int minimum, int maximum) {
+int getValidNumber(string prompt, int minimum, int maximum) {//tejas
     while (true) {
         cout << prompt;
         string line;
@@ -702,7 +702,7 @@ int getValidNumber(string prompt, int minimum, int maximum) {
     }
 }
 
-int main() {
+int main() {//philip
     loadstats();
     //do-while loop for the main game
     do {
