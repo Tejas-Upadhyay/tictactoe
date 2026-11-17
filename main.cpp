@@ -10,10 +10,10 @@
 #include <random>
 #include <sstream>
 #include <stdexcept>
-
 using namespace std;
 
 //tic tac toe
+
 //stats
 struct Stats {
     int wins = 0;
@@ -32,7 +32,8 @@ const int AIVAI = 2;
 const int WIN = 0;
 const int LOSS = 1;
 const int DRAW = 2;
-Stats stats;                //all modes added together
+
+Stats stats; //all modes added together
 Stats modeStats[NUM_MODES]; //one record for each mode
 
 //keeps track of the moves in the current game
@@ -41,7 +42,6 @@ public:
     int position;
     char player;
 };
-
 Move history[9];
 int moveCount = 0;
 
@@ -109,9 +109,9 @@ bool availability(char board[9], int position) {
 }
 
 //function to simplify movement of players
-void move(char *board, int position, char XorO) {
+void move(char* board, int position, char XorO) {
     //same as board[position] = XorO
-    (board + position) = XorO;
+    *(board + position) = XorO;
 }
 
 //Put the numbers 1 through 9 back on the board.
@@ -134,11 +134,11 @@ void addToHistory(int position, char player) {
 void showhistory() {
     cout << "Moves this game:" << endl;
     if (moveCount == 0) {
-        cout << " (none)" << endl;
+        cout << "  (none)" << endl;
     }
     for (int i = 0; i < moveCount; i++) {
-        cout << " " << i + 1 << ". " << history[i].player
-             << " took spot " << history[i].position + 1 << endl;
+        cout << "  " << i + 1 << ". " << history[i].player
+            << " took spot " << history[i].position + 1 << endl;
     }
     cout << endl;
 }
@@ -150,10 +150,12 @@ void updateStats(int mode, int result) {
     if (result == WIN) {
         stats.wins++;
         modeStats[mode].wins++;
-    } else if (result == LOSS) {
+    }
+    else if (result == LOSS) {
         stats.losses++;
         modeStats[mode].losses++;
-    } else {
+    }
+    else {
         stats.draws++;
         modeStats[mode].draws++;
     }
@@ -168,8 +170,7 @@ int getValidMoveUser(char board[9]) {
         try {
             if (!(cin >> input)) {
                 if (cin.eof()) {
-                    cout << "
-Input ended. Exiting." << endl;
+                    cout << "\nInput ended. Exiting." << endl;
                     exit(0);
                 }
                 throw "Invalid input";
@@ -192,12 +193,14 @@ Input ended. Exiting." << endl;
             return choice - 1;
         }
         //identifies error and prints appropriate response
-        catch (const char *error) {
+        catch (const char* error) {
             if (strcmp(error, "Invalid input") == 0) {
                 cout << "Please enter a whole number." << endl;
-            } else if (strcmp(error, "Out of range") == 0) {
+            }
+            else if (strcmp(error, "Out of range") == 0) {
                 cout << "Pick a number from 1 to 9." << endl;
-            } else if (strcmp(error, "Position occupied") == 0) {
+            }
+            else if (strcmp(error, "Position occupied") == 0) {
                 cout << "That spot is already taken." << endl;
             }
         }
@@ -250,14 +253,15 @@ int AIbestmove(char board[9], char aiplayer, char player) {
     //Take the center if it's open. Otherwise, try a corner.
     if (availability(board, 4)) {
         return 4;
-    } else if (availability(board, 0) || availability(board, 2) || availability(board, 6) ||
-               availability(board, 8)) {
+    }
+    else if (availability(board, 0) || availability(board, 2) || availability(board, 6) || availability(board, 8)) {
         int i;
         do {
             i = getrandom();
         } while (!availability(board, i) || (!(i == 0) && !(i == 2) && !(i == 6) && !(i == 8)));
         return i;
-    } else {
+    }
+    else {
         int i;
         do {
             i = getrandom();
@@ -298,7 +302,8 @@ int minimax(char board[9], int depth, bool isMax, char aiplayer) {
             }
         }
         return best;
-    } else {
+    }
+    else {
         int best = 1000;
         for (int i = 0; i < 9; i++) {
             if (availability(board, i)) {
@@ -320,6 +325,7 @@ int minimax(char board[9], int depth, bool isMax, char aiplayer) {
 int bestMove(char board[9], char aiplayer) {
     int bestVal = -1000;
     int best = -1;
+
     //try every empty square and see what score it gets
     for (int i = 0; i < 9; i++) {
         if (availability(board, i)) {
@@ -339,7 +345,7 @@ int bestMove(char board[9], char aiplayer) {
 }
 
 //saves one stats record with a prefix so load knows which mode it is
-void saveOneStats(ofstream &file, string prefix, const Stats &s) {
+void saveOneStats(ofstream& file, string prefix, const Stats& s) {
     file << prefix << "_games " << s.games << endl;
     file << prefix << "_wins " << s.wins << endl;
     file << prefix << "_losses " << s.losses << endl;
@@ -360,7 +366,8 @@ void savestats() {
         if (!file) {
             throw runtime_error("Couldn't finish saving stats.");
         }
-    } catch (const runtime_error &error) {
+    }
+    catch (const runtime_error& error) {
         cerr << "Error: " << error.what() << endl;
     }
 }
@@ -375,45 +382,63 @@ void loadstats() {
     while (file >> label >> value) {
         if (label == "all_games") {
             stats.games = value;
-        } else if (label == "all_wins") {
+        }
+        else if (label == "all_wins") {
             stats.wins = value;
-        } else if (label == "all_losses") {
+        }
+        else if (label == "all_losses") {
             stats.losses = value;
-        } else if (label == "all_draws") {
+        }
+        else if (label == "all_draws") {
             stats.draws = value;
-        } else if (label == "pvp_games") {
+        }
+        else if (label == "pvp_games") {
             modeStats[PVP].games = value;
-        } else if (label == "pvp_wins") {
+        }
+        else if (label == "pvp_wins") {
             modeStats[PVP].wins = value;
-        } else if (label == "pvp_losses") {
+        }
+        else if (label == "pvp_losses") {
             modeStats[PVP].losses = value;
-        } else if (label == "pvp_draws") {
+        }
+        else if (label == "pvp_draws") {
             modeStats[PVP].draws = value;
-        } else if (label == "pvai_games") {
+        }
+        else if (label == "pvai_games") {
             modeStats[PVAI].games = value;
-        } else if (label == "pvai_wins") {
+        }
+        else if (label == "pvai_wins") {
             modeStats[PVAI].wins = value;
-        } else if (label == "pvai_losses") {
+        }
+        else if (label == "pvai_losses") {
             modeStats[PVAI].losses = value;
-        } else if (label == "pvai_draws") {
+        }
+        else if (label == "pvai_draws") {
             modeStats[PVAI].draws = value;
-        } else if (label == "aivai_games") {
+        }
+        else if (label == "aivai_games") {
             modeStats[AIVAI].games = value;
-        } else if (label == "aivai_wins") {
+        }
+        else if (label == "aivai_wins") {
             modeStats[AIVAI].wins = value;
-        } else if (label == "aivai_losses") {
+        }
+        else if (label == "aivai_losses") {
             modeStats[AIVAI].losses = value;
-        } else if (label == "aivai_draws") {
+        }
+        else if (label == "aivai_draws") {
             modeStats[AIVAI].draws = value;
         }
         //old stats file only had these four lines
         else if (label == "games") {
             stats.games = value;
-        } else if (label == "wins") {
+        }
+        else if (label == "wins") {
             stats.wins = value;
-        } else if (label == "losses") {
+        }
+        else if (label == "losses") {
             stats.losses = value;
-        } else if (label == "draws") {
+        }
+        else if (label == "draws") {
             stats.draws = value;
         }
     }
@@ -421,15 +446,14 @@ void loadstats() {
 }
 
 //prints one stats record
-void printOneStats(string label, const Stats *s) {
+void printOneStats(string label, const Stats* s) {
     cout << label << endl;
-    cout << " Games: " << s->games << endl;
-    cout << " Wins: " << s->wins << endl;
-    cout << " Losses: " << s->losses << endl;
-    cout << " Draws: " << s->draws << endl;
+    cout << "  Games: " << s->games << endl;
+    cout << "  Wins: " << s->wins << endl;
+    cout << "  Losses: " << s->losses << endl;
+    cout << "  Draws: " << s->draws << endl;
     if (s->games > 0) {
-        cout << " Win rate: " << (s->wins * 100.0 / s->games) << "%"
-             << endl;
+        cout << "  Win rate: " << (s->wins * 100.0 / s->games) << "%" << endl;
     }
     cout << endl;
 }
@@ -446,7 +470,8 @@ void resetstats() {
         }
         savestats();
         cout << "Stats reset." << endl;
-    } else {
+    }
+    else {
         cout << "Reset cancelled." << endl;
     }
 }
@@ -485,7 +510,8 @@ void playPvP(char board[9], string p1, string p2) {
             // Count the result from X's side, so an O win is saved as a loss.
             if (current == 'X') {
                 updateStats(PVP, WIN);
-            } else {
+            }
+            else {
                 updateStats(PVP, LOSS);
             }
             savestats();
@@ -503,7 +529,8 @@ void playPvP(char board[9], string p1, string p2) {
         if (current == 'X') {
             current = 'O';
             currentName = p2;
-        } else {
+        }
+        else {
             current = 'X';
             currentName = p1;
         }
@@ -517,7 +544,8 @@ void playPvAI(char board[9], string name, char playerLetter, int difficulty) {
     char aiplayer;
     if (human == 'X') {
         aiplayer = 'O';
-    } else {
+    }
+    else {
         aiplayer = 'X';
     }
     //X always goes first, so the player starts if they picked X
@@ -549,14 +577,17 @@ void playPvAI(char board[9], string name, char playerLetter, int difficulty) {
                 return;
             }
             humanTurn = false;
-        } else {
+        }
+        else {
             //AI turn, pick a move based on difficulty
             int aichoice;
             if (difficulty == 1) {
                 aichoice = AIrandom(board);
-            } else if (difficulty == 2) {
+            }
+            else if (difficulty == 2) {
                 aichoice = AIbestmove(board, aiplayer, human);
-            } else {
+            }
+            else {
                 aichoice = bestMove(board, aiplayer);
             }
             move(board, aichoice, aiplayer);
@@ -596,16 +627,19 @@ void playAIvAI(char board[9], int difficulty1, int difficulty2) {
         if (current == 'X') {
             opponent = 'O';
             difficulty = difficulty1;
-        } else {
+        }
+        else {
             opponent = 'X';
             difficulty = difficulty2;
         }
         int choice;
         if (difficulty == 1) {
             choice = AIrandom(board);
-        } else if (difficulty == 2) {
+        }
+        else if (difficulty == 2) {
             choice = AIbestmove(board, current, opponent);
-        } else {
+        }
+        else {
             choice = bestMove(board, current);
         }
         move(board, choice, current);
@@ -614,10 +648,12 @@ void playAIvAI(char board[9], int difficulty1, int difficulty2) {
         if (checkwin(board, current)) {
             printboard(board);
             cout << "AI " << current << " wins!" << endl;
+
             // Count the result from X's side, so an O win is saved as a loss.
             if (current == 'X') {
                 updateStats(AIVAI, WIN);
-            } else {
+            }
+            else {
                 updateStats(AIVAI, LOSS);
             }
             savestats();
@@ -634,7 +670,8 @@ void playAIvAI(char board[9], int difficulty1, int difficulty2) {
         }
         if (current == 'X') {
             current = 'O';
-        } else {
+        }
+        else {
             current = 'X';
         }
     }
@@ -646,8 +683,7 @@ int getValidNumber(string prompt, int minimum, int maximum) {
         cout << prompt;
         string line;
         if (!getline(cin, line)) {
-            cout << "
-Input ended. Exiting." << endl;
+            cout << "\nInput ended. Exiting." << endl;
             exit(0);
         }
         istringstream input(line);
@@ -658,8 +694,8 @@ Input ended. Exiting." << endl;
             continue;
         }
         if (number < minimum || number > maximum) {
-            cout << "Enter a number from " << minimum << " to " << maximum
-                 << "." << endl;
+            cout << "Enter a number from " << minimum
+                << " to " << maximum << "." << endl;
             continue;
         }
         return number;
@@ -679,14 +715,15 @@ int main() {
         cout << endl;
         cout << "TIC TAC TOE" << endl;
         cout << "===========" << endl;
-        cout << "Wins: " << stats.wins << " Losses: " << stats.losses
-             << " Draws: " << stats.draws << endl;
+        cout << "Wins: " << stats.wins << "  Losses: " << stats.losses << "  Draws: " << stats.draws << endl;
         cout << endl;
+
         cout << "1. Player vs Player" << endl;
         cout << "2. Player vs AI" << endl;
         cout << "3. AI vs AI" << endl;
         cout << "4. Stats" << endl;
         cout << "5. Quit" << endl;
+
         gamechoice = getValidNumber("Choice: ", 1, 5);
         //get both player names
         if (gamechoice == 1) {
@@ -702,27 +739,26 @@ int main() {
             string name;
             cout << "Your name: ";
             cin >> name;
-            cin.ignore(1000, '
-');
+            cin.ignore(1000, '\n');
             //pick difficulty
-            int diffculty = getValidNumber("Pick your opponent: Easy (1), Hard (2), Impossible (3): ", 1, 3);
+            int diffculty = getValidNumber(
+                "Pick your opponent: Easy (1), Hard (2), Impossible (3): ",
+                1, 3
+            );
             //pick O or X
             while (true) {
                 cout << "Pick O or X: ";
                 if (!(cin >> player)) {
                     if (cin.eof()) {
-                        cout << "
-Input ended. Exiting." << endl;
+                        cout << "\nInput ended. Exiting." << endl;
                         exit(0);
                     }
                     cin.clear();
-                    cin.ignore(1000, '
-');
+                    cin.ignore(1000, '\n');
                     cout << "Please enter O or X." << endl;
                     continue;
                 }
-                cin.ignore(1000, '
-');
+                cin.ignore(1000, '\n');
                 player = toupper(static_cast<unsigned char>(player));
                 if (player == 'O' || player == 'X') {
                     break;
@@ -733,8 +769,15 @@ Input ended. Exiting." << endl;
         }
         if (gamechoice == 3) {
             //pick a difficulty for each AI
-            int difficulty1 = getValidNumber("AI X difficulty: Easy (1), Hard (2), Impossible (3): ", 1, 3);
-            int difficulty2 = getValidNumber("AI O difficulty: Easy (1), Hard (2), Impossible (3): ", 1, 3);
+            int difficulty1 = getValidNumber(
+                "AI X difficulty: Easy (1), Hard (2), Impossible (3): ",
+                1, 3
+            );
+
+            int difficulty2 = getValidNumber(
+                "AI O difficulty: Easy (1), Hard (2), Impossible (3): ",
+                1, 3
+            );
             playAIvAI(board, difficulty1, difficulty2);
         }
         if (gamechoice == 4) {
